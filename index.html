@@ -227,30 +227,132 @@
         .lobster-preview {
             width: 400px;
             height: 400px;
-            background: radial-gradient(circle at 30% 30%, rgba(255, 107, 53, 0.15) 0%, transparent 60%),
-                        radial-gradient(circle at 70% 70%, rgba(192, 132, 252, 0.1) 0%, transparent 50%);
-            border-radius: 50%;
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10rem;
-            position: relative;
-            animation: float 6s ease-in-out infinite;
+            animation: meme-bounce 2s ease-in-out infinite;
         }
 
         .lobster-preview::before {
             content: '';
             position: absolute;
-            width: 100%;
-            height: 100%;
+            width: 350px;
+            height: 350px;
+            background: conic-gradient(from 0deg, #FF6B35, #F7931E, #FFD93D, #6BCF7F, #4D96FF, #C084FC, #FF6B35);
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 107, 53, 0.1) 0%, transparent 70%);
-            animation: pulse-glow 4s ease-in-out infinite;
+            animation: rainbow-spin 3s linear infinite;
+            opacity: 0.3;
+            filter: blur(20px);
         }
 
-        @keyframes pulse-glow {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.1); opacity: 0.8; }
+        .lobster-body {
+            font-size: 10rem;
+            position: relative;
+            z-index: 2;
+            filter: drop-shadow(0 0 30px rgba(255, 107, 53, 0.5));
+            animation: lobster-shake 0.5s ease-in-out infinite;
+        }
+
+        .lobster-glasses {
+            position: absolute;
+            top: 35%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 4rem;
+            z-index: 3;
+            animation: glasses-bounce 1s ease-in-out infinite;
+        }
+
+        .lobster-hat {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 3.5rem;
+            z-index: 3;
+            animation: hat-wiggle 2s ease-in-out infinite;
+        }
+
+        .sparkles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .sparkle {
+            position: absolute;
+            font-size: 1.5rem;
+            animation: sparkle-twinkle 1s ease-in-out infinite;
+        }
+
+        .sparkle:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .sparkle:nth-child(2) { top: 20%; right: 15%; animation-delay: 0.2s; }
+        .sparkle:nth-child(3) { bottom: 20%; left: 15%; animation-delay: 0.4s; }
+        .sparkle:nth-child(4) { bottom: 10%; right: 10%; animation-delay: 0.6s; }
+        .sparkle:nth-child(5) { top: 50%; left: 5%; animation-delay: 0.8s; }
+        .sparkle:nth-child(6) { top: 50%; right: 5%; animation-delay: 1s; }
+
+        @keyframes rainbow-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes meme-bounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.05); }
+        }
+
+        @keyframes lobster-shake {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+
+        @keyframes glasses-bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        @keyframes hat-wiggle {
+            0%, 100% { transform: translateX(-50%) rotate(-5deg); }
+            50% { transform: translateX(-50%) rotate(5deg); }
+        }
+
+        @keyframes sparkle-twinkle {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .laser-eyes {
+            position: absolute;
+            top: 38%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 20px;
+            z-index: 4;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+        }
+
+        .laser {
+            width: 40px;
+            height: 8px;
+            background: linear-gradient(90deg, #FF0000, #FF6B35, transparent);
+            border-radius: 4px;
+            box-shadow: 0 0 20px #FF0000, 0 0 40px #FF6B35;
+            animation: laser-shoot 2s ease-in-out infinite;
+        }
+
+        .laser:nth-child(2) {
+            background: linear-gradient(-90deg, #FF0000, #FF6B35, transparent);
+        }
+
+        @keyframes laser-shoot {
+            0%, 100% { opacity: 0.5; transform: scaleX(1); }
+            50% { opacity: 1; transform: scaleX(1.5); }
         }
 
         @keyframes float {
@@ -777,7 +879,23 @@
             </div>
         </div>
         <div class="hero-image">
-            <div class="lobster-preview">🦞</div>
+            <div class="lobster-preview">
+                <div class="sparkles">
+                    <span class="sparkle">✨</span>
+                    <span class="sparkle">⭐</span>
+                    <span class="sparkle">✨</span>
+                    <span class="sparkle">💫</span>
+                    <span class="sparkle">⭐</span>
+                    <span class="sparkle">✨</span>
+                </div>
+                <div class="lobster-hat">🎩</div>
+                <div class="lobster-body">🦞</div>
+                <div class="lobster-glasses">😎</div>
+                <div class="laser-eyes">
+                    <div class="laser"></div>
+                    <div class="laser"></div>
+                </div>
+            </div>
         </div>
     </section>
 
