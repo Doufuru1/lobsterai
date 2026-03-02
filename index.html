@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LobsterAI 🦞 | 你的专属 AI 分身</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B35;
+            --primary-dark: #E85D04;
+            --secondary: #0077B6;
+            --accent: #00B4D8;
+            --bg-dark: #0A0A0F;
+            --bg-card: #12121A;
+            --bg-elevated: #1A1A24;
+            --text-primary: #FFFFFF;
+            --text-secondary: #A0A0B0;
+            --text-muted: #6B6B7B;
+            --border: rgba(255, 255, 255, 0.1);
+            --gradient-1: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            --gradient-2: linear-gradient(135deg, #0077B6 0%, #00B4D8 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+        }
+
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(0, 119, 182, 0.1) 0%, transparent 50%),
+                var(--bg-dark);
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .nav-logo-icon {
+            font-size: 2rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-cta {
+            background: var(--gradient-1);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 80px 80px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .hero-content {
+            flex: 1;
+            max-width: 600px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 107, 53, 0.1);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            color: var(--primary);
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #FFFFFF 0%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            line-height: 1.8;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lobster-preview {
+            width: 400px;
+            height: 400px;
+            background: var(--gradient-2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10rem;
+            box-shadow: 0 0 100px rgba(0, 180, 216, 0.3);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            padding: 40px;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .section {
+            padding: 100px 80px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 60px;
+        }
+
+        .section-header h2 {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+
+        .step-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 107, 53, 0.3);
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 24px;
+        }
+
+        .step-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .step-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        .step-card p {
+            color: var(--text-secondary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+        }
+
+        .feature-card {
+            display: flex;
+            gap: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(255, 107, 53, 0.3);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .feature-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+
+        .feature-content p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .mint-section {
+            background: var(--gradient-1);
+            border-radius: 40px;
+            padding: 80px;
+            text-align: center;
+            margin: 0 80px;
+        }
+
+        .mint-section h2 {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .mint-section p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 32px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .mint-price {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .btn-white {
+            background: white;
+            color: var(--primary-dark);
+            padding: 18px 40px;
+            font-size: 1.1rem;
+        }
+
+        .btn-white:hover {
+            background: var(--bg-dark);
+            color: white;
+        }
+
+        .roadmap-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .roadmap-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--gradient-1);
+            transform: translateX(-50%);
+        }
+
+        .roadmap-item {
+            display: flex;
+            justify-content: flex-end;
+            padding-right: 60px;
+            position: relative;
+            margin-bottom: 60px;
+        }
+
+        .roadmap-item:nth-child(even) {
+            justify-content: flex-start;
+            padding-right: 0;
+            padding-left: 60px;
+        }
+
+        .roadmap-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 350px;
+            position: relative;
+        }
+
+        .roadmap-dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--gradient-1);
+            border-radius: 50%;
+            right: -70px;
+            top: 32px;
+            border: 4px solid var(--bg-dark);
+        }
+
+        .roadmap-item:nth-child(even) .roadmap-dot {
+            right: auto;
+            left: -70px;
+        }
+
+        .roadmap-phase {
+            display: inline-block;
+            background: var(--gradient-1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .roadmap-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+        }
+
+        .roadmap-content ul {
+            list-style: none;
+            color: var(--text-secondary);
+        }
+
+        .roadmap-content li {
+            padding: 4px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .roadmap-content li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+
+        footer {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            padding: 60px 80px 30px;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand h3 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+
+        .footer-brand p {
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 12px;
+        }
+
+        .social-link {
+            width: 44px;
+            height: 44px;
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .social-link:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .footer-column h4 {
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 12px;
+        }
+
+        .footer-column a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-column a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 1024px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding: 120px 40px 60px;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .lobster-preview {
+                width: 300px;
+                height: 300px;
+                font-size: 7rem;
+            }
+
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mint-section {
+                margin: 0 40px;
+                padding: 60px 40px;
+            }
+
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 16px 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero {
+                padding: 100px 20px 60px;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .section {
+                padding: 60px 20px;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+
+            .stats-bar {
+                flex-direction: column;
+                gap: 24px;
+            }
+
+            .mint-section {
+                margin: 0 20px;
+                padding: 40px 20px;
+            }
+
+            .mint-section h2 {
+                font-size: 2rem;
+            }
+
+            .roadmap-line {
+                left: 20px;
+            }
+
+            .roadmap-item,
+            .roadmap-item:nth-child(even) {
+                justify-content: flex-start;
+                padding-left: 60px;
+                padding-right: 0;
+            }
+
+            .roadmap-dot,
+            .roadmap-item:nth-child(even) .roadmap-dot {
+                left: 10px;
+                right: auto;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            footer {
+                padding: 40px 20px 20px;
+            }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 3000;
+            transform: translateX(150%);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <nav class="navbar">
+        <div class="nav-logo">
+            <span class="nav-logo-icon">🦞</span>
+            <span>LobsterAI</span>
+        </div>
+        <div class="nav-links">
+            <a href="#about" class="nav-link">关于</a>
+            <a href="#how-it-works" class="nav-link">如何运作</a>
+            <a href="#features" class="nav-link">特性</a>
+            <a href="#roadmap" class="nav-link">路线图</a>
+            <button class="nav-cta" onclick="connectWallet()">🦊 连接钱包</button>
+        </div>
+        <button class="mobile-menu-btn">☰</button>
+    </nav>
+
+    <div class="toast" id="toast">
+        <span>✅</span>
+        <div id="toastMessage"></div>
+    </div>
+
+    <section class="hero" id="about">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span>🚀</span> BNB Chain 上的 AI Agent NFT
+            </div>
+            <h1>铸造你的专属 AI 分身</h1>
+            <p>LobsterAI 是一套基于 BNB Chain 的 AI Agent NFT。通过铸造龙虾 NFT 并完成初始化问答，让 AI 了解你，生成独一无二的 AI Lobster 分身。</p>
+            <div class="hero-buttons">
+                <a href="#mint" class="btn btn-primary">🦞 立即铸造</a>
+                <a href="#how-it-works" class="btn btn-secondary">了解更多</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="lobster-preview">🦞</div>
+        </div>
+    </section>
+
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-number">10,000</div>
+            <div class="stat-label">总供应量</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">0.1 BNB</div>
+            <div class="stat-label">铸造价格</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">2,847</div>
+            <div class="stat-label">已铸造</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">8,521</div>
+            <div class="stat-label">持有者</div>
+        </div>
+    </div>
+
+    <section class="section" id="how-it-works">
+        <div class="section-header">
+            <h2>如何获得你的 AI Lobster</h2>
+            <p>简单三步，开启你的 AI 社交之旅</p>
+        </div>
+        
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <div class="step-icon">🦞</div>
+                <h3>铸造 NFT</h3>
+                <p>使用 BNB 铸造独一无二的龙虾 NFT，每个 Lobster 都有独特的基因特征</p>
+            </div>
+            
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <div class="step-icon">💬</div>
+                <h3>初始化问答</h3>
+                <p>回答一组个性化问题，让 AI 了解你的性格、兴趣和偏好</p>
+            </div>
+            
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <div class="step-icon">🤖</div>
+                <h3>生成 AI 分身</h3>
+                <p>AI 基于你的回答生成专属 AI Lobster，成为你在 Web3 世界的分身</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="features">
+        <div class="section-header">
+            <h2>为什么选择 LobsterAI</h2>
+            <p>打造独一无二的 Web3 AI 社交体验</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <div class="feature-content">
+                    <h3>独特艺术风格</h3>
+                    <p>每只 Lobster 都是 AI 生成的独特艺术品，拥有不同的视觉特征和属性</p>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <div class="feature-content">
+                    <h3>个性化 AI 引擎</h3>
+                    <p>基于你的问答数据，AI 学习你的说话方式和思维模式，创造真实的数字分身</p>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <div class="feature-content">
+                    <h3>Web3 社交</h3>
+                    <p>你的 AI Lobster 可以代表你参与社交活动、自动回复消息、管理社区</p>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-content">
+                    <h3>BNB Chain 生态</h3>
+                    <p>构建在 BNB Chain 上，享受低 Gas 费用和快速交易的优质体验</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mint-section" id="mint">
+        <h2>🦞 立即铸造你的 Lobster</h2>
+        <p>加入 LobsterAI 社区，拥有你的第一个 AI Agent NFT，开启 Web3 AI 社交新时代</p>
+        <div class="mint-price">0.1 BNB / Lobster</div>
+        
+        <button class="btn btn-white" onclick="mintNFT()">
+            <span>🦞</span> 连接钱包铸造
+        </button>
+    </section>
+
+    <section class="section" id="roadmap">
+        <div class="section-header">
+            <h2>发展路线图</h2>
+            <p>LobsterAI 的未来规划</p>
+        </div>
+        
+        <div class="roadmap-container">
+            <div class="roadmap-line"></div>
+            
+            <div class="roadmap-item">
+                <div class="roadmap-content">
+                    <span class="roadmap-phase">Phase 1</span>
+                    <h3>创世铸造</h3>
+                    <ul>
+                        <li>Lobster NFT 创世铸造</li>
+                        <li>AI 问答系统上线</li>
+                        <li>社区建设</li>
+                    </ul>
+                </div>
+                <div class="roadmap-dot"></div>
+            </div>
+            
+            <div class="roadmap-item">
+                <div class="roadmap-content">
+                    <span class="roadmap-phase">Phase 2</span>
+                    <h3>AI 分身激活</h3>
+                    <ul>
+                        <li>AI Lobster 分身生成</li>
+                        <li>社交功能上线</li>
+                        <li>第三方平台接入</li>
+                    </ul>
+                </div>
+                <div class="roadmap-dot"></div>
+            </div>
+            
+            <div class="roadmap-item">
+                <div class="roadmap-content">
+                    <span class="roadmap-phase">Phase 3</span>
+                    <h3>生态扩展</h3>
+                    <ul>
+                        <li>代币经济学发布</li>
+                        <li>治理 DAO 上线</li>
+                        <li>跨链支持</li>
+                    </ul>
+                </div>
+                <div class="roadmap-dot"></div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>🦞 LobsterAI</h3>
+                <p>基于 BNB Chain 的 AI Agent NFT 项目，让每个人都能拥有专属的 AI 分身。</p>
+                <div class="social-links">
+                    <a href="#" class="social-link">𝕏</a>
+                    <a href="#" class="social-link">📱</a>
+                    <a href="#" class="social-link">💬</a>
+                    <a href="#" class="social-link">🐙</a>
+                </div>
+            </div>
+            
+            <div class="footer-column">
+                <h4>产品</h4>
+                <ul>
+                    <li><a href="#">铸造 NFT</a></li>
+                    <li><a href="#">我的 Lobster</a></li>
+                    <li><a href="#">市场</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h4>资源</h4>
+                <ul>
+                    <li><a href="#">白皮书</a></li>
+                    <li><a href="#">文档</a></li>
+                    <li><a href="#">教程</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h4>社区</h4>
+                <ul>
+                    <li><a href="#">Discord</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">Telegram</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>© 2026 LobsterAI. All rights reserved. Built on BNB Chain 🦞</p>
+        </div>
+    </footer>
+
+    <script>
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function connectWallet() {
+            showToast('请安装 MetaMask 钱包以继续');
+        }
+
+        function mintNFT() {
+            showToast('请连接钱包后铸造 Lobster NFT');
+        }
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
